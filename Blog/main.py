@@ -21,13 +21,21 @@ def get_db():
         yield db 
     finally:
         db.close()
-        
-@myapp.post("/posts/", status_code=status.HTTP_201_CREATED)
-async def create_user(user: PostBase, db: Annotated[Session, Depends(get_db)]):
-    db_post = models.Post(**user.dict())
+#PostTable      
+@myapp.post("/posts/", status_code=status.HTTP_200_OK)
+async def create_postm(post: PostBase, db: Annotated[Session, Depends(get_db)]):
+    db_post = models.Post(**post.dict())
     db.add(db_post)
     db.commit()
     return {"message": "Content added successfully"}
+@myapp.get("/posts/{post_id}", status_code=status.HTTP_200_OK)
+async def read_postm(post_id:int, db: Annotated[Session, Depends(get_db)]):
+    post=db.query(models.Post).filter(models.Post.id==post_id).first()
+    if post is None:
+        raise HTTPException(status_code=404,detail='Post was not found')
+    return post
+
+#USERTable
 
 @myapp.post("/users/", status_code=status.HTTP_201_CREATED)
 async def create_user(user: UserBase, db: Annotated[Session, Depends(get_db)]):
