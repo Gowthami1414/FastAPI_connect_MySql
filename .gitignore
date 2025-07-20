@@ -1,5 +1,6 @@
 # Ignore virtual environment
 fastapi-env/
+blog-env
 
 # Byte-compiled / cache files
 __pycache__/
